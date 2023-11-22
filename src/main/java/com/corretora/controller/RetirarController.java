@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
-import com.corretora.model.Acao;
+import com.corretora.model.ativo.Ativo;
 import com.corretora.model.TipoTransacao;
 import com.corretora.service.TransacaoService;
 
@@ -31,7 +31,7 @@ public class RetirarController {
     public String retirar(Model model, @RequestParam double valor) {
     	try {	
     		
-    		this.transacaoService.setTransacao(new Acao(valor), "1", TipoTransacao.SAIDA);
+    		this.transacaoService.setTransacao(new Ativo(valor), "1", TipoTransacao.SAIDA);
     		
     	}catch(QuantidadeInvalidaException qie) {
     		model.addAttribute("errorMessage",qie.getMessage());

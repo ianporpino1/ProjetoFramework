@@ -5,6 +5,7 @@ import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.*;
+import com.corretora.model.ativo.Ativo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.List;
 
 
 @Service
-public class TransacaoService {
+public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
     @Autowired
     private TransacaoRepository transacaoRepository;
 
@@ -100,8 +101,8 @@ public class TransacaoService {
 
         transacaoRepository.save(transacao);
     }
-
-    public void setTransacao(Acao acao, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
+    //REFATORAR PARA TEMPLATE METHOD //ATIVO = ACAO, IMOVEL, VEICULO
+    public void createTransacao(Ativo ativo, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
         Transacao transacao = new Transacao();
         long userId = autorizacaoService.LoadUsuarioLogado().getId();
         
@@ -113,27 +114,26 @@ public class TransacaoService {
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
         
-        transacao.setAcao(acao);
+        transacao.setAtivo(ativo);
         transacao.setTipoTransacao(tipoTransacao);
-        transacao.setQuantidade(intQuantidade);
         transacao.setTodayData();
         transacao.setIdUsuario(userId);
         
         if(tipoTransacao == TipoTransacao.SAIDA){
-            setTransacaoSaida(transacao);
+            createTransacaoSaida(transacao);
         } else if(tipoTransacao == TipoTransacao.ENTRADA){
-            setTransacaoEntrada(transacao);
+            createTransacaoEntrada(transacao);
         } else if(tipoTransacao == TipoTransacao.VENDA){
-            setTransacaoVenda(transacao);
+            createTransacaoVenda(transacao);
         } else if(tipoTransacao == TipoTransacao.COMPRA){
-            setTransacaoCompra(transacao);
+            createTransacaoCompra(transacao);
        }
         
         this.saveTransacao(transacao);
     }
 
-    public void setTransacaoSaida(Transacao transacao) throws AcaoInvalidaException{
-        double total = -(transacao.getQuantidade()) * transacao.getAcao().getPreco();
+    public void createTransacaoSaida(Transacao transacao) throws AcaoInvalidaException{ //vai mudar dependendo
+        double total = -(transacao.getQuantidade()) * transacao.getAtivo().getPreco();
         if (this.getSaldo() - total < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a retirada");
         } else {
@@ -141,22 +141,22 @@ public class TransacaoService {
         }
     }
 
-    public void setTransacaoEntrada(Transacao transacao) throws AcaoInvalidaException{
-        if (transacao.getAcao().getPreco() <= 0) {
+    public void createTransacaoEntrada(Transacao transacao) throws AcaoInvalidaException{
+        if (transacao.getAtivo().getPreco() <= 0) {
             throw new AcaoInvalidaException("O deposito precisa ser maior que 0");
         } else {
-            transacao.setTotalTransacao(transacao.getAcao().getPreco());
+            transacao.setTotalTransacao(transacao.getAtivo().getPreco());
         }
     }
 
-    public void setTransacaoVenda(Transacao transacao) throws QuantidadeInvalidaException {
-        double total = -(transacao.getQuantidade()) * transacao.getAcao().getPreco();
+    public void createTransacaoVenda(Transacao transacao) throws QuantidadeInvalidaException {
+        double total = -(transacao.getQuantidade()) * transacao.getAtivo().getPreco();
         transacao.setTotalTransacao(total);
         this.checkPosicao(transacao);
     }
 
-    public void setTransacaoCompra(Transacao transacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
-        double total = transacao.getQuantidade() * transacao.getAcao().getPreco();
+    public void createTransacaoCompra(Transacao transacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
+        double total = transacao.getQuantidade() * transacao.getAtivo().getPreco();
 
         if (this.getSaldo() - total < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
@@ -169,7 +169,7 @@ public class TransacaoService {
 
 
     public void checkPosicao(Transacao transacao) throws QuantidadeInvalidaException {
-        Posicao posicao = posicaoService.findPosicaoByTicker(transacao.getAcao().getTicker());
+        Posicao posicao = posicaoService.findPosicaoByIdentificador(transacao.getAtivo()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
 
         if(posicao == null){
             posicaoService.setPosicao(transacao);

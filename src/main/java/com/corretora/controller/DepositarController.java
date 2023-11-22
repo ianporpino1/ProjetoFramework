@@ -1,5 +1,6 @@
 package com.corretora.controller;
 
+import com.corretora.model.ativo.Acao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
-import com.corretora.model.Acao;
+import com.corretora.model.ativo.Ativo;
 import com.corretora.model.TipoTransacao;
 import com.corretora.service.TransacaoService;
 
@@ -30,7 +31,7 @@ public class DepositarController {
     public String depositar(Model model, @RequestParam double valor) {
     	try {
     		
-    		this.transacaoService.setTransacao(new Acao(valor), "1", TipoTransacao.ENTRADA);
+    		this.transacaoService.createTransacao(new Ativo(valor), "1", TipoTransacao.ENTRADA);
     		
     	}catch(QuantidadeInvalidaException qie) {
     		model.addAttribute("errorMessage",qie.getMessage());

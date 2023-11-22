@@ -1,30 +1,27 @@
 package com.corretora.service;
 
-import com.corretora.dto.AcaoDTO;
-import com.corretora.dto.RecomendacaoDTO.Attributes;
+import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
+import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.service.strategyRecomendacao.GeradorRecomendacao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class RecomendacaoService {
+    @Autowired //acho q n funciona
+    private GeradorRecomendacao geradorRecomendacao;
 
-    //1/EvEbitda
+    @Autowired
+    private AtivoService ativoService;
     public List<Double> processarInformacoes(Attributes attributes){
-        ArrayList<Double> informacoes = new ArrayList<>();
 
-        double retornoEmPorcentagemEsperado = (1/attributes.evEbitda)*100;
-        retornoEmPorcentagemEsperado = retornoEmPorcentagemEsperado*100;
-        retornoEmPorcentagemEsperado = Math.round(retornoEmPorcentagemEsperado);
-        retornoEmPorcentagemEsperado = retornoEmPorcentagemEsperado/100;
+        return geradorRecomendacao.gerarRecomendacao(attributes);
 
-        double priceEarningsRatio = attributes.lastClosePriceEarningsRatio*100;
-        priceEarningsRatio = Math.round(priceEarningsRatio);
-        priceEarningsRatio = priceEarningsRatio/100;
+    }
 
-        informacoes.add(retornoEmPorcentagemEsperado);
-        informacoes.add(priceEarningsRatio);
-
-        return informacoes;
+    public void recuperarInformacoes(String identificador) throws AcaoInvalidaException {
+        ativoService.recuperadorInformacoes.recuperarInformacoes(identificador);
     }
 }

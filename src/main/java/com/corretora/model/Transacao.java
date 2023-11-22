@@ -1,6 +1,7 @@
 package com.corretora.model;
 
-import com.corretora.dto.AcaoDTO;
+import com.corretora.model.ativo.Ativo;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -14,7 +15,8 @@ public class Transacao implements Serializable {
     private Long id;
 
     @Embedded
-    private Acao acao;
+    @Nullable//
+    private Ativo ativo;
 
     private int quantidade;
 
@@ -28,12 +30,12 @@ public class Transacao implements Serializable {
     public Transacao(){}
 
 
-    public Acao getAcao() {
-        return acao;
+    public Ativo getAtivo() {
+        return ativo;
     }
 
-    public void setAcao(Acao acao) {
-        this.acao = acao;
+    public void setAtivo(Ativo ativo) {
+        this.ativo = ativo;
     }
 
     public double getTotal() {

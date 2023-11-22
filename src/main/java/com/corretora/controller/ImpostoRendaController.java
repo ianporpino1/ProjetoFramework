@@ -30,7 +30,7 @@ public class ImpostoRendaController {
     @PostMapping("/calculadora-imposto-de-renda")
     public String calcularIR(Model model,@RequestParam int mes,@RequestParam int ano){
         List<ResultadoDTO> resultadosList = resultadoService.findAllResultadoByData(mes,ano);
-        double valorImposto = resultadoService.getImposto();
+        double valorImposto = resultadoService.calcularIR(resultadosList);
         double resultadoTotal = resultadoService.calcularResultadoTotal(resultadosList);
         model.addAttribute("resultadosList", resultadosList);
         model.addAttribute("valorImposto", valorImposto);

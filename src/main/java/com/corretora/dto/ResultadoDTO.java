@@ -11,9 +11,12 @@ public class ResultadoDTO {
 
     private double resultadoPorcentagem;
 
+    private double volume;
 
-    public ResultadoDTO(String ativo, double resultado, double resultadoPorcentagem) {
+
+    public ResultadoDTO(String ativo,double volume, double resultado, double resultadoPorcentagem) {
         this.ativo = ativo;
+        this.volume = volume;
         this.resultado = resultado;
         this.resultadoPorcentagem = resultadoPorcentagem;
 
@@ -27,6 +30,14 @@ public class ResultadoDTO {
 
     public void setAtivo(String ativo) {
         this.ativo = ativo;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(double volume) {
+        this.volume = volume;
     }
 
     public double getResultado() {

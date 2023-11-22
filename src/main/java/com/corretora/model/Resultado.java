@@ -22,6 +22,8 @@ public class Resultado implements Serializable {
 
     private String ativo;
 
+    private double volume;
+
     private Date data;
 
     private Long idUsuario;
@@ -29,8 +31,9 @@ public class Resultado implements Serializable {
     public Resultado() {
     }
 
-    public Resultado(String ativo, double resultado, double resultadoPorcentagem, Long idUsuario) {
+    public Resultado(String ativo,double volume, double resultado, double resultadoPorcentagem, Long idUsuario) {
         this.ativo = ativo;
+        this.volume = volume;
         this.resultado = resultado;
         this.resultadoPorcentagem = resultadoPorcentagem;
         this.data = Date.valueOf(LocalDate.now());
@@ -75,6 +78,14 @@ public class Resultado implements Serializable {
 
     public void setData(Date data) {
         this.data = data;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(double volume) {
+        this.volume = volume;
     }
 
     public Long getIdUsuario() {

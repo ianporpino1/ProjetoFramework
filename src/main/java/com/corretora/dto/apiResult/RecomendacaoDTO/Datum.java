@@ -1,4 +1,4 @@
-package com.corretora.dto.RecomendacaoDTO;
+package com.corretora.dto.apiResult.RecomendacaoDTO;
 
 public class Datum{
     public String id;

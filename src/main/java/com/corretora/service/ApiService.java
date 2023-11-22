@@ -1,16 +1,13 @@
 package com.corretora.service;
 
-import com.corretora.dto.AcaoDTO;
-import com.corretora.dto.RecomendacaoDTO.Attributes;
-import com.corretora.dto.RecomendacaoDTO.Datum;
-import com.corretora.dto.RecomendacaoDTO.Root;
+import com.corretora.dto.apiResult.AcaoDTO;
+import com.corretora.dto.apiResult.ApiResult;
+import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
+import com.corretora.dto.apiResult.RecomendacaoDTO.Root;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.HttpsParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
@@ -21,11 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.SSLParameters;
-import java.io.DataInput;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-
 
 @Service
 @PropertySource("classpath:application-dev.properties")
@@ -34,7 +26,7 @@ public class ApiService {
     @Value("${apiKey}")
     private String apiKey;
 
-    public AcaoDTO callApiQuote(String ticker) throws AcaoInvalidaException, JsonProcessingException {
+    public ApiResult callApiQuote(String ticker) throws AcaoInvalidaException, JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-RapidAPI-Key", apiKey);
@@ -58,7 +50,7 @@ public class ApiService {
     }
 
 
-    public Attributes callApiValuation(String ticker) throws AcaoInvalidaException, JsonProcessingException{
+    public ApiResult callApiValuation(String ticker) throws AcaoInvalidaException, JsonProcessingException{
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-RapidAPI-Key", apiKey);

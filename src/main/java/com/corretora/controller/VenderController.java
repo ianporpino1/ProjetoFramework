@@ -1,11 +1,14 @@
 package com.corretora.controller;
 
-import com.corretora.dto.AcaoDTO;
+import com.corretora.dto.apiResult.AcaoDTO;
+import com.corretora.dto.recuperadorDTO.InformacoesDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
-import com.corretora.model.Acao;
+import com.corretora.model.ativo.Acao;
+import com.corretora.model.ativo.Ativo;
 import com.corretora.model.TipoTransacao;
 import com.corretora.service.ApiService;
+import com.corretora.service.AtivoService;
 import com.corretora.service.PosicaoService;
 import com.corretora.service.TransacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,10 +33,10 @@ public class VenderController {
     @Autowired
     private PosicaoService posicaoService;
 
-    private AcaoDTO result;
-
     @Autowired
-    ApiService apiService;
+    private AtivoService ativoService;
+
+    private AcaoDTO result;
 
 
 
@@ -51,7 +54,9 @@ public class VenderController {
         model.addAttribute("ticker",ticker);
         try{
 
-            result = apiService.callApiQuote(ticker);
+            //result = (AcaoDTO) apiService.callApiQuote(ticker);
+
+            result = ativoService.recuperarAtivo(ticker);//resolver se ativoservice retorna Ativo ou algum DTO
 
             model.addAttribute("symbol",result.ticker);
             model.addAttribute("price",result.price);
@@ -71,7 +76,7 @@ public class VenderController {
         model.addAttribute("quantidade", quantidade);
         try{
 
-            this.transacaoService.setTransacao(new Acao(result.ticker, result.price),quantidade, TipoTransacao.VENDA);
+            this.transacaoService.createTransacao(new Acao(result.ticker, result.price),quantidade, TipoTransacao.VENDA);
 
         }catch (QuantidadeInvalidaException qie){
             model.addAttribute("errorMessage",qie.getMessage());

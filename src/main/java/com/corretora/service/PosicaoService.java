@@ -38,12 +38,7 @@ public class PosicaoService {
     public void setPosicao(Transacao transacao){
         Posicao posicao = new Posicao();
 
-        posicao.setAcao(transacao.getAcao());
-        posicao.setQuantidadeTotal(transacao.getQuantidade());
-        posicao.setPrecoMedio(posicao.getAcao().getPreco());
-        posicao.setValorTotal(transacao.getTotal());
-        posicao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
-        posicao.setStatusPosicao();
+
 
         this.save(posicao);
     }
@@ -94,7 +89,7 @@ public class PosicaoService {
         posicao.setQuantidadeTotal(novaQuantidade);
 
         double resultadoFinanceiro = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
-        Resultado resultado = new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() );
+        Resultado resultado = new Resultado(posicao.getAcao().getTicker(), transacao.getTotal(), resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() );
         resultadoService.saveResultado(resultado);
         LocalDate localDate = resultado.getData().toLocalDate();
 

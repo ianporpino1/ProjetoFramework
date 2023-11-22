@@ -1,14 +1,5 @@
 package com.corretora.dto;
 
-import com.corretora.model.Acao;
-import com.corretora.model.TipoTransacao;
-import com.corretora.model.Transacao;
-import jakarta.persistence.Embeddable;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.sql.Date;
-
 public class TransacaoResumo { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMAR HISTORICO)
     private String ticker;
     private double preco;

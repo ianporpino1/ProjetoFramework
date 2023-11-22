@@ -4,6 +4,8 @@ package com.corretora.service;
 import com.corretora.dao.ResultadoRepository;
 import com.corretora.dto.ResultadoDTO;
 import com.corretora.model.Resultado;
+import com.corretora.service.templateMethodImposto.CalculadoraImposto;
+import com.corretora.service.templateMethodImposto.CalculadoraImpostoAcao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +22,17 @@ public class ResultadoService {
     private ResultadoRepository resultadoRepository;
 
     @Autowired
-    AutorizacaoService autorizacaoService;
+    private AutorizacaoService autorizacaoService;
 
-    private final double ALIQUOTA_IR_BRASIL=0.15;
+    @Autowired
+    private CalculadoraImposto calculadoraImposto;
+
 
     private double imposto;
+
+    private double volume;
+
+    private double lucro;
 
     public void saveResultado(Resultado resultado){
         this.resultadoRepository.save(resultado);
@@ -45,43 +53,40 @@ public class ResultadoService {
         List<ResultadoDTO> resultadosList = new ArrayList<>();
         for (Object[] objResultado : objResultados) {
             String ativo = (String) objResultado[0];
-            double resultado = (double) objResultado[1];
-            double resultadoPorcentegem = (double) objResultado[2];
+            double volume = (double) objResultado[1];
+            double resultado = (double) objResultado[2];
+            double resultadoPorcentegem = (double) objResultado[3];
 
 
-            ResultadoDTO res = new ResultadoDTO(ativo, resultado, resultadoPorcentegem);
+            ResultadoDTO res = new ResultadoDTO(ativo, volume, resultado, resultadoPorcentegem);
 
             resultadosList.add(res);
         }
         return resultadosList;
     }
 
-
-    public void calcularIR(int mes, int ano) {
-        List<ResultadoDTO> resultadosList = findAllResultadoByData(mes,ano);
-        double total = calcularResultadoTotal(resultadosList);
-        double novoImposto=0;
-
-        Resultado prejuizo = findResultadoByName("prejuizoCompensar");
-        if(total > 0){
-            novoImposto = total * ALIQUOTA_IR_BRASIL;
-            if(prejuizo != null)
-                atualizarPrejuizoCompensar(prejuizo,total);
-        }
-        else if(total < 0){
-            setPrejuizoCompensar(prejuizo,total);
-        }
+    //FLEXIVEL
+    public double calcularIR(List<ResultadoDTO> resultadoDTOList) {
 
 
-        novoImposto = novoImposto*100;
-        novoImposto = Math.round(novoImposto);
-        novoImposto = novoImposto/100;
+        imposto = calculadoraImposto.calcularImposto(lucro,volume);
 
-        imposto = novoImposto;
+
+//        Resultado prejuizo = findResultadoByName("prejuizoCompensar");
+//        if(total > 0){
+//            novoImposto = total * ALIQUOTA_IR_BRASIL;
+//            if(prejuizo != null)
+//                atualizarPrejuizoCompensar(prejuizo,total);
+//        }
+//        else if(total < 0){
+//            setPrejuizoCompensar(prejuizo,total);
+//        }
+
+        return imposto;
     }
 
 
-
+    //opcional(somente para acoes)
     public void setPrejuizoCompensar(Resultado prejuizo, double total){
         if(prejuizo==null){
             Resultado prejuizoCompensar = new Resultado();
@@ -97,6 +102,7 @@ public class ResultadoService {
         }
     }
 
+    //opcional(somente para acoes)
     public void atualizarPrejuizoCompensar(Resultado prejuizo, double total){
         if(total > 0)
             prejuizo.setResultado(0);
@@ -106,15 +112,20 @@ public class ResultadoService {
     }
 
 
-    public double calcularResultadoTotal(List<ResultadoDTO> resultadosList) {
-        double total=0;
-        for(ResultadoDTO resultado : resultadosList){
-            total += resultado.getResultado();
+    public void calcularResultadoTotal(List<ResultadoDTO> resultadoDTOList) {
+        lucro=0;
+        volume =0;
+        for(ResultadoDTO resultado : resultadoDTOList){
+            lucro += resultado.getResultado();
+            volume+= resultado.getVolume();
         }
-        total = total*100;
-        total = Math.round(total);
-        total = total/100;
-        return total;
+        lucro = lucro*100;
+        lucro = Math.round(lucro);
+        lucro = lucro/100;
+
+        volume = volume*100;
+        volume = Math.round(volume);
+        volume = volume/100;
     }
 
     public double getImposto() {

@@ -1,7 +1,7 @@
 package com.corretora.controller;
 
-import com.corretora.dto.AcaoDTO;
-import com.corretora.dto.RecomendacaoDTO.Attributes;
+import com.corretora.dto.apiResult.ApiResult;
+import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.service.ApiService;
 import com.corretora.service.RecomendacaoService;
@@ -21,10 +21,7 @@ public class RecomendacaoController {
     @Autowired
     RecomendacaoService recomendacaoService;
 
-    @Autowired
-    ApiService apiService;
 
-    Attributes attributes;
 
     @GetMapping("/recomendacao")
     public String recomendacaoIndex(Model model){
@@ -35,18 +32,18 @@ public class RecomendacaoController {
 
     @PostMapping("/recomendacao/informacoes")
     public String getRecomendacaoAcao(Model model,@RequestParam String ticker) throws JsonProcessingException {
-        model.addAttribute("ticker",ticker.toUpperCase());
-        try{
+        model.addAttribute("ticker", ticker.toUpperCase());
+        try {
 
-            attributes =  apiService.callApiValuation(ticker);
+            attributes = (Attributes) apiService.callApiValuation(ticker);
 
-        }catch (AcaoInvalidaException aie){
-            model.addAttribute("errorMessage",aie.getMessage());
+        } catch (AcaoInvalidaException aie) {
+            model.addAttribute("errorMessage", aie.getMessage());
             return "error/acaoError";
         }
 
         List<Double> informacoes = recomendacaoService.processarInformacoes(attributes);
-        model.addAttribute("informacoes",informacoes);
+        model.addAttribute("informacoes", informacoes);
 
         return "recomendacaoAcao";
 

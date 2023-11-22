@@ -1,6 +1,8 @@
-package com.corretora.dto.RecomendacaoDTO;
+package com.corretora.dto.apiResult.RecomendacaoDTO;
 
-public class Attributes{
+import com.corretora.dto.apiResult.ApiResult;
+
+public class Attributes implements ApiResult {
     public long marketCap;
     public long totalEnterprise;
     public double lastClosePriceEarningsRatio;
