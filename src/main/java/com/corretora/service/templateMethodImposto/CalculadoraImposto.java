@@ -1,22 +1,26 @@
 package com.corretora.service.templateMethodImposto;
-
-import com.corretora.dto.ResultadoDTO;
-import com.corretora.model.Resultado;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.corretora.model.Imposto;
 
 public abstract class CalculadoraImposto {
 
-    public double calcularImposto(double lucro, double volume){
+    public Imposto calcularImposto(double lucro, double volume){
+        Imposto imposto;
 
         boolean isIsento = calcularIsencao(volume);
 
-        if(!isIsento && lucro > 0) {
-            return calcularValorImposto(lucro);
+        if(!isIsento){
+            imposto = new Imposto();
+            if( lucro > 0) {
+                imposto.setLucro(calcularValorImposto(lucro));
+                return imposto;
+            }
+            else if(lucro < 0){
+                calcularPrejuizoCompensar(imposto.getLucro());
+            }
         }
 
-        return 0;
+
+        return null;
     }
 
 
@@ -25,8 +29,8 @@ public abstract class CalculadoraImposto {
 
     public abstract double calcularValorImposto(double total);
 
-    protected Resultado calcularPrejuizoCompensar(){
+    protected void calcularPrejuizoCompensar(double total){
 
-        return null;
+
     }
 }

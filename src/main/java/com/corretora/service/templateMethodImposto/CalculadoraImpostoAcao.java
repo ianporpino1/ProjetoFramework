@@ -1,15 +1,18 @@
 package com.corretora.service.templateMethodImposto;
 
-import com.corretora.dto.ResultadoDTO;
-import com.corretora.model.Resultado;
+import com.corretora.service.templateMethodImposto.prejuizoCompensarInterface.PrejuizoCompensarAcaoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+@Service
 public class CalculadoraImpostoAcao extends CalculadoraImposto{
 
     private final double ALIQUOTA_IMPOSTO_ACOES_BR = 0.15;
 
     private final double VALOR_ISENCAO_ACOES_BRASIL = 20000;
+
+    @Autowired
+    PrejuizoCompensarAcaoService prejuizoCompensarAcaoService;
 
 
     @Override
@@ -38,8 +41,9 @@ public class CalculadoraImpostoAcao extends CalculadoraImposto{
 
 
     @Override
-    public Resultado calcularPrejuizoCompensar(){
-        Resultado prejuizo = findResultadoByName("prejuizoCompensar");
+    public void calcularPrejuizoCompensar(double total){
+
+        prejuizoCompensarAcaoService.setPrejuizoCompensar(total);
     }
 
 

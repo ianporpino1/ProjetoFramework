@@ -1,8 +1,7 @@
 package com.corretora.controller;
 
-import com.corretora.dto.PosicaoDTO;
 import com.corretora.dto.ResultadoDTO;
-import com.corretora.service.PosicaoService;
+import com.corretora.model.Imposto;
 import com.corretora.service.ResultadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,12 +28,14 @@ public class ImpostoRendaController {
 
     @PostMapping("/calculadora-imposto-de-renda")
     public String calcularIR(Model model,@RequestParam int mes,@RequestParam int ano){
+
         List<ResultadoDTO> resultadosList = resultadoService.findAllResultadoByData(mes,ano);
-        double valorImposto = resultadoService.calcularIR(resultadosList);
-        double resultadoTotal = resultadoService.calcularResultadoTotal(resultadosList);
+
+        Imposto imposto =  resultadoService.calcularIR(resultadosList);
+
         model.addAttribute("resultadosList", resultadosList);
-        model.addAttribute("valorImposto", valorImposto);
-        model.addAttribute("resultadoTotal",resultadoTotal);
+        model.addAttribute("valorImposto", imposto.getValorImposto());
+        model.addAttribute("resultadoTotal",imposto.getLucro());
 
         return "impostoCalculado";
     }
