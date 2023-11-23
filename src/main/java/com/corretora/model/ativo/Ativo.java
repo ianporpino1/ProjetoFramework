@@ -5,12 +5,10 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Embeddable
-public class Ativo implements Serializable {
-
-    protected String nome;
-    protected double preco;
+public abstract class Ativo implements Serializable {
 
     protected String identificador;
+    protected double preco;
 
     public Ativo() {
     }
@@ -19,8 +17,8 @@ public class Ativo implements Serializable {
         this.preco = preco;
     }
     
-    public Ativo(String nome, double preco) {
-        this.nome = nome;
+    public Ativo(String identificador, double preco) {
+        this.identificador = identificador;
         this.preco = preco;
     }
 
@@ -33,15 +31,15 @@ public class Ativo implements Serializable {
         this.preco = preco;
     }
 
-    public String getNome() {
-        return nome;
+    public String getIdentificador() {
+        return identificador;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
     public boolean isNomeNull() {
-    	return nome == null;
+    	return identificador == null;
     }
 }

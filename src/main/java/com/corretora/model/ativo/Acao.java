@@ -7,6 +7,10 @@ public class Acao extends Ativo{
     public Acao(String ticker, double price) {
     }
 
+    public Acao() {
+        super();
+    }
+
     public String getTicker() {
         return ticker;
     }

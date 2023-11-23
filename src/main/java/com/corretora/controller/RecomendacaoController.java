@@ -3,7 +3,9 @@ package com.corretora.controller;
 import com.corretora.dto.apiResult.ApiResult;
 import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
 import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.model.ativo.Ativo;
 import com.corretora.service.ApiService;
+import com.corretora.service.AtivoService;
 import com.corretora.service.RecomendacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,8 @@ public class RecomendacaoController {
     @Autowired
     RecomendacaoService recomendacaoService;
 
-
+    @Autowired
+    AtivoService ativoService;
 
     @GetMapping("/recomendacao")
     public String recomendacaoIndex(Model model){
@@ -35,14 +38,14 @@ public class RecomendacaoController {
         model.addAttribute("ticker", ticker.toUpperCase());
         try {
 
-            attributes = (Attributes) apiService.callApiValuation(ticker);
+            result = ativoService.recuperarAtivo(ticker);
 
         } catch (AcaoInvalidaException aie) {
             model.addAttribute("errorMessage", aie.getMessage());
             return "error/acaoError";
         }
 
-        List<Double> informacoes = recomendacaoService.processarInformacoes(attributes);
+        List<Double> informacoes = recomendacaoService.processarInformacoes(result);
         model.addAttribute("informacoes", informacoes);
 
         return "recomendacaoAcao";

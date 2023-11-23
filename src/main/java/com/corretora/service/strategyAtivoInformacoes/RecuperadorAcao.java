@@ -4,6 +4,8 @@ import com.corretora.dto.apiResult.AcaoDTO;
 import com.corretora.dto.recuperadorDTO.InformacoesDTO;
 import com.corretora.dto.recuperadorDTO.AtivoESPECIFICODTO;
 import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.model.ativo.Acao;
+import com.corretora.model.ativo.Ativo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -34,6 +36,7 @@ public class RecuperadorAcao implements RecuperadorInformacoes{
 
             InformacoesDTO acao = om.readValue(response.getBody(), InformacoesDTO.class);
             acao.identificador = ticker;
+            converterDTOemAtivo(acao);
             return acao;
 
         }catch(HttpClientErrorException he){
@@ -41,5 +44,15 @@ public class RecuperadorAcao implements RecuperadorInformacoes{
         }catch (JsonProcessingException upe){
             throw new AcaoInvalidaException("Ticker Obrigatorio");
         }
+    }
+    @Override
+    public Ativo converterDTOemAtivo(InformacoesDTO informacoesDTO){
+        Ativo acao = new Acao();
+        return acao;
+    }
+
+
+    public InformacoesDTO recuperarInformacoesAdicionais(){
+        return null;
     }
 }

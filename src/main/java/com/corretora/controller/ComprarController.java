@@ -3,6 +3,7 @@ package com.corretora.controller;
 import com.corretora.dto.apiResult.AcaoDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
+import com.corretora.model.ativo.Acao;
 import com.corretora.model.ativo.Ativo;
 import com.corretora.model.TipoTransacao;
 import com.corretora.service.AtivoService;

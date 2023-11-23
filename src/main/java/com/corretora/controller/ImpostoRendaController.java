@@ -31,7 +31,7 @@ public class ImpostoRendaController {
 
         List<ResultadoDTO> resultadosList = resultadoService.findAllResultadoByData(mes,ano);
 
-        Imposto imposto =  resultadoService.calcularIR(resultadosList);
+        Imposto imposto =  resultadoService.calcularIR(mes,ano);
 
         model.addAttribute("resultadosList", resultadosList);
         model.addAttribute("valorImposto", imposto.getValorImposto());

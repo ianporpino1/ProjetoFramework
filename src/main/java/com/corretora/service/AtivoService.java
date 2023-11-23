@@ -1,19 +1,24 @@
 package com.corretora.service;
 
+import com.corretora.dto.recuperadorDTO.InformacoesDTO;
 import com.corretora.model.ativo.Ativo;
 import com.corretora.service.strategyAtivoInformacoes.RecuperadorInformacoes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AtivoService {
+    @Autowired
+    protected RecuperadorInformacoes recuperadorInformacoes;
 
-    RecuperadorInformacoes recuperadorInformacoes;
-
-    Ativo ativo;
+    private Ativo ativo;
 
 
     public Ativo recuperarAtivo(String identificador){
-        //retorno sera algum DTO = recuperadorInformacoes.recuperarInformacoes();
+        //InformacoesDTO informacoes= recuperadorInformacoes.recuperarInformacoes();
         //transformar DTO em Ativo
-        //return informacoes;
-        return ativo;
+        return null;
     }
+
+
 }

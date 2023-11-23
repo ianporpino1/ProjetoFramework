@@ -57,8 +57,8 @@ public class ResultadoService {
         return resultadosList;
     }
 
-    public Imposto calcularIR(List<ResultadoDTO> resultadoDTOList) {
-
+    public Imposto calcularIR(int mes, int ano) {
+        List<ResultadoDTO> resultadoDTOList = findAllResultadoByData(mes,ano);
         calcularResultadoTotal(resultadoDTOList);
 
         imposto = calculadoraImposto.calcularImposto(imposto.getLucro(),imposto.getVolume());

@@ -113,6 +113,8 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
         if(intQuantidade <= 0){
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
+
+        //chama ValidacaoService.validate();
         
         transacao.setAtivo(ativo);
         transacao.setTipoTransacao(tipoTransacao);
@@ -139,6 +141,7 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
         } else {
             transacao.setTotalTransacao(total);
         }
+        //chama ValidacaoService.validate();
     }
 
     public void createTransacaoEntrada(Transacao transacao) throws AcaoInvalidaException{
@@ -169,7 +172,7 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
 
 
     public void checkPosicao(Transacao transacao) throws QuantidadeInvalidaException {
-        Posicao posicao = posicaoService.findPosicaoByIdentificador(transacao.getAtivo()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
+        Posicao posicao = posicaoService.findPosicaoByIdentificador(transacao.getAtivo().getIdentificador()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
 
         if(posicao == null){
             posicaoService.setPosicao(transacao);

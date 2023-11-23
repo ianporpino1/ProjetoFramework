@@ -14,8 +14,8 @@ public interface PosicaoRepository extends JpaRepository<Posicao, Long> {
 
     @Query(value = "SELECT ticker FROM corretoradb.posicao WHERE id_usuario = :idUsuario",nativeQuery = true)
     List<String> findTickers(@Param("idUsuario")Long idUsuario);
-    @Query(value = "SELECT * FROM corretoradb.posicao WHERE ticker = :ticker AND id_usuario = :idUsuario",nativeQuery = true)
-    Posicao findPosicaoByTicker(@Param("ticker") String ticker,@Param("idUsuario")Long idUsuario);
+    @Query(value = "SELECT * FROM corretoradb.posicao WHERE identificador = :identificador AND id_usuario = :idUsuario",nativeQuery = true)
+    Posicao findPosicaoByIdentificador(@Param("identificador") String identificador,@Param("idUsuario")Long idUsuario);
 
     @Query(value = "SELECT ticker, TRUNCATE(preco_medio,2), quantidade_total, TRUNCATE(valor_total,2) FROM corretoradb.posicao WHERE id_usuario = :idUsuario",nativeQuery = true)
     List<Object[]> findFormattedPosicoes(@Param("idUsuario")Long idUsuario);

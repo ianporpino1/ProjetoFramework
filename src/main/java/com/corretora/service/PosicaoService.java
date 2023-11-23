@@ -25,8 +25,8 @@ public class PosicaoService {
     private ResultadoService resultadoService;
 
 
-    public Posicao findPosicaoByTicker(String ticker){
-        return this.posicaoRepository.findPosicaoByTicker(ticker,autorizacaoService.LoadUsuarioLogado().getId());
+    public Posicao findPosicaoByIdentificador(String identificador){
+        return this.posicaoRepository.findPosicaoByIdentificador(identificador,autorizacaoService.LoadUsuarioLogado().getId());
     }
 
     public void save(Posicao posicao){
@@ -88,8 +88,8 @@ public class PosicaoService {
         int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
         posicao.setQuantidadeTotal(novaQuantidade);
 
-        double resultadoFinanceiro = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
-        Resultado resultado = new Resultado(posicao.getAcao().getTicker(), transacao.getTotal(), resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() );
+        double resultadoFinanceiro = (transacao.getAtivo().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
+        Resultado resultado = new Resultado(posicao.getAtivo().getIdentificador(), transacao.getTotal(), resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() );
         resultadoService.saveResultado(resultado);
         LocalDate localDate = resultado.getData().toLocalDate();
 
@@ -102,8 +102,8 @@ public class PosicaoService {
         posicao.setStatusPosicao();
 
 
-        if(posicao.getQuantidadeTotal() == 0){
-            posicaoRepository.deleteByTicker(posicao.getAcao().getTicker(),autorizacaoService.LoadUsuarioLogado().getId());
+        if(posicao.getQuantidadeTotal() == 0){               //identificador
+            posicaoRepository.deleteByTicker(posicao.getAtivo().getIdentificador(),autorizacaoService.LoadUsuarioLogado().getId());
         }
         else{
             posicaoRepository.save(posicao);

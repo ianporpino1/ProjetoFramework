@@ -2,6 +2,7 @@ package com.corretora.service;
 
 import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
 import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.service.strategyAtivoInformacoes.RecuperadorInformacoes;
 import com.corretora.service.strategyRecomendacao.GeradorRecomendacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import java.util.*;
 public class RecomendacaoService {
     @Autowired //acho q n funciona
     private GeradorRecomendacao geradorRecomendacao;
+
+    @Autowired
+    private RecuperadorInformacoes recuperadorInformacoes;
 
     @Autowired
     private AtivoService ativoService;

@@ -9,7 +9,9 @@ public class CalculadoraImpostoImovel extends CalculadoraImposto{
     }
 
     @Override
-    public double calcularValorImposto(List<Double> a) {
+    public double calcularValorImposto(double total) {
         return 0;
     }
+
+
 }

@@ -14,6 +14,9 @@ public class Posicao implements Serializable {
     @Embedded
     private Ativo ativo;
 
+    private int quantidadeTotal;
+    private double precoMedio;
+    private double valorTotal;
     private StatusPosicao statusPosicao;
 
     private Long idUsuario;
@@ -41,19 +44,48 @@ public class Posicao implements Serializable {
         return ativo;
     }
 
-    public void setAtivo(Ativo acao) {
+    public void setAtivo(Ativo ativo) {
         this.ativo = ativo;
+    }
+
+    public double getPrecoMedio() {
+        return precoMedio;
+    }
+
+    public void setPrecoMedio(double precoMedio) {
+        this.precoMedio = precoMedio;
+    }
+
+    public double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 
     public StatusPosicao getStatusPosicao() {
         return statusPosicao;
     }
 
-    public void setStatusPosicao(StatusPosicao statusPosicao) {
-        this.statusPosicao = statusPosicao;
+    public void setStatusPosicao() {
+        if(this.getQuantidadeTotal() == 0){
+            this.statusPosicao= StatusPosicao.FECHADA;
+        }
+        else if(this.getQuantidadeTotal() >0){
+            this.statusPosicao= StatusPosicao.COMPRADA;
+        }
+        else{
+            this.statusPosicao= StatusPosicao.VENDIDA;
+        }
     }
 
+    public int getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
 
-
+    public void setQuantidadeTotal(int quantidade) {
+        this.quantidadeTotal = quantidade;
+    }
 
 }
