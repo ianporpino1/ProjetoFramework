@@ -17,7 +17,11 @@ public interface PosicaoRepository extends JpaRepository<Posicao, Long> {
     @Query(value = "SELECT * FROM corretoradb.posicao WHERE identificador = :identificador AND id_usuario = :idUsuario",nativeQuery = true)
     Posicao findPosicaoByIdentificador(@Param("identificador") String identificador,@Param("idUsuario")Long idUsuario);
 
-    @Query(value = "SELECT ticker, TRUNCATE(preco_medio,2), quantidade_total, TRUNCATE(valor_total,2) FROM corretoradb.posicao WHERE id_usuario = :idUsuario",nativeQuery = true)
+    @Query(value = "SELECT * FROM corretoradb.posicao WHERE id_ativo = :idAtivo AND id_usuario = :idUsuario",nativeQuery = true)
+    Posicao findPosicaoByIdAtivo(@Param("idAtivo") Long idAtivo,@Param("idUsuario")Long idUsuario);
+
+    @Query(value = "SELECT a.identificador, TRUNCATE(p.preco_medio, 2) AS preco_medio, p.quantidade_total, " +
+                    "TRUNCATE(p.valor_total, 2) AS valor_total FROM Posicao p JOIN Ativo a ON p.id_ativo = a.id WHERE p.id_usuario = :idUsuario", nativeQuery = true)
     List<Object[]> findFormattedPosicoes(@Param("idUsuario")Long idUsuario);
     @Modifying
     @Query(value = "delete FROM corretoradb.posicao WHERE ticker = :ticker AND id_usuario = :idUsuario", nativeQuery = true)

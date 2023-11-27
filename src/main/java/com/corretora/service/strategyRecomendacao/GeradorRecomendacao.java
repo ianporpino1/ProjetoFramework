@@ -1,6 +1,6 @@
 package com.corretora.service.strategyRecomendacao;
 
-import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
+import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoAcaoDTO.Attributes;
 
 import java.util.List;
 

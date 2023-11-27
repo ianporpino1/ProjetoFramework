@@ -1,9 +1,11 @@
 package com.corretora.service;
 
-import com.corretora.dto.apiResult.RecomendacaoDTO.Attributes;
+import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
+import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoAcaoDTO.Attributes;
 import com.corretora.excecao.AcaoInvalidaException;
-import com.corretora.service.strategyAtivoInformacoes.RecuperadorInformacoes;
+import com.corretora.service.strategyAtivoInformacoes.Recuperador;
 import com.corretora.service.strategyRecomendacao.GeradorRecomendacao;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ public class RecomendacaoService {
     private GeradorRecomendacao geradorRecomendacao;
 
     @Autowired
-    private RecuperadorInformacoes recuperadorInformacoes;
+    private Recuperador recuperador;
 
     @Autowired
     private AtivoService ativoService;
@@ -25,7 +27,7 @@ public class RecomendacaoService {
 
     }
 
-    public void recuperarInformacoes(String identificador) throws AcaoInvalidaException {
-        ativoService.recuperadorInformacoes.recuperarInformacoes(identificador);
+    public InformacoesDTO recuperarInformacoes(String identificador) throws AcaoInvalidaException, JsonProcessingException {
+        return recuperador.recuperarInformacoes(identificador);
     }
 }

@@ -11,8 +11,7 @@ public class Posicao implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private Ativo ativo;
+    private Long idAtivo;
 
     private int quantidadeTotal;
     private double precoMedio;
@@ -38,14 +37,6 @@ public class Posicao implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Ativo getAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(Ativo ativo) {
-        this.ativo = ativo;
     }
 
     public double getPrecoMedio() {
@@ -86,6 +77,14 @@ public class Posicao implements Serializable {
 
     public void setQuantidadeTotal(int quantidade) {
         this.quantidadeTotal = quantidade;
+    }
+
+    public Long getIdAtivo() {
+        return idAtivo;
+    }
+
+    public void setIdAtivo(Long idAtivo) {
+        this.idAtivo = idAtivo;
     }
 
 }

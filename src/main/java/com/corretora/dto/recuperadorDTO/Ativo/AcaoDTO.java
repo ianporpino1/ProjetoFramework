@@ -1,9 +1,7 @@
-package com.corretora.dto.apiResult;
+package com.corretora.dto.recuperadorDTO.Ativo;
 
 
-import com.corretora.dto.recuperadorDTO.InformacoesDTO;
-
-public class AcaoDTO extends InformacoesDTO {
+public class AcaoDTO implements AtivoDTO {
     public double price;
     public double change_point;
     public double change_percentage;

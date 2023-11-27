@@ -1,13 +1,10 @@
 package com.corretora.controller;
 
-import com.corretora.dto.apiResult.AcaoDTO;
-import com.corretora.dto.recuperadorDTO.InformacoesDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.AcaoDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.ativo.Acao;
-import com.corretora.model.ativo.Ativo;
 import com.corretora.model.TipoTransacao;
-import com.corretora.service.ApiService;
 import com.corretora.service.AtivoService;
 import com.corretora.service.PosicaoService;
 import com.corretora.service.TransacaoService;
@@ -54,9 +51,7 @@ public class VenderController {
         model.addAttribute("ticker",ticker);
         try{
 
-            //result = (AcaoDTO) apiService.callApiQuote(ticker);
-
-            result = ativoService.recuperarAtivo(ticker);//resolver se ativoservice retorna Ativo ou algum DTO
+            result = (AcaoDTO) ativoService.recuperarAtivo(ticker);
 
             model.addAttribute("symbol",result.ticker);
             model.addAttribute("price",result.price);

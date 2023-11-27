@@ -1,5 +1,6 @@
 package com.corretora.service;
 
+import com.corretora.dao.AtivoRepository;
 import com.corretora.dao.TransacaoRepository;
 import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.AcaoInvalidaException;
@@ -16,7 +17,7 @@ import java.util.List;
 
 
 @Service
-public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
+public class TransacaoService {
     @Autowired
     private TransacaoRepository transacaoRepository;
 
@@ -25,6 +26,16 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
 
     @Autowired
     private  PosicaoService posicaoService;
+
+    @Autowired
+    private AtivoService ativoService;
+
+    @Autowired
+    private AtivoRepository ativoRepository;
+
+    private Ativo ativoTransacao;
+
+    private Transacao transacao;
     
     public double getSaldo(){
     	List<Object[]> saldoBruto = transacaoRepository.calcularSaldo(autorizacaoService.LoadUsuarioLogado().getId());
@@ -103,8 +114,22 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
     }
     //REFATORAR PARA TEMPLATE METHOD //ATIVO = ACAO, IMOVEL, VEICULO
     public void createTransacao(Ativo ativo, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
-        Transacao transacao = new Transacao();
+        transacao = new Transacao();
         long userId = autorizacaoService.LoadUsuarioLogado().getId();
+
+        ativoTransacao = ativoRepository.findByIdentificador(ativo.getIdentificador());
+
+
+
+        if (ativoTransacao == null) {
+            ativoTransacao = ativoService.saveAtivo(ativo);
+        } else {
+            ativoTransacao.setPreco(ativo.getPreco());
+            ativoTransacao = ativoService.saveAtivo(ativoTransacao);
+        }
+
+
+        Long ativoId = ativoTransacao.getId();
         
         if(quantidade == ""){
             throw new QuantidadeInvalidaException("Quantidade Obrigatoria");
@@ -115,27 +140,31 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
         }
 
         //chama ValidacaoService.validate();
-        
-        transacao.setAtivo(ativo);
+
         transacao.setTipoTransacao(tipoTransacao);
+        transacao.setQuantidade(intQuantidade);
         transacao.setTodayData();
         transacao.setIdUsuario(userId);
+
+        transacao.setPreco(ativoTransacao.getPreco());
+
         
         if(tipoTransacao == TipoTransacao.SAIDA){
-            createTransacaoSaida(transacao);
+            createTransacaoSaida();
         } else if(tipoTransacao == TipoTransacao.ENTRADA){
-            createTransacaoEntrada(transacao);
+            createTransacaoEntrada();
         } else if(tipoTransacao == TipoTransacao.VENDA){
-            createTransacaoVenda(transacao);
+            createTransacaoVenda();
         } else if(tipoTransacao == TipoTransacao.COMPRA){
-            createTransacaoCompra(transacao);
+            createTransacaoCompra();
        }
         
         this.saveTransacao(transacao);
     }
 
-    public void createTransacaoSaida(Transacao transacao) throws AcaoInvalidaException{ //vai mudar dependendo
-        double total = -(transacao.getQuantidade()) * transacao.getAtivo().getPreco();
+    public void createTransacaoSaida() throws AcaoInvalidaException{
+        transacao.setPreco(transacao.getPreco());
+        double total = -(transacao.getQuantidade()) * transacao.getPreco();
         if (this.getSaldo() - total < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a retirada");
         } else {
@@ -144,35 +173,40 @@ public class TransacaoService { //TALVEZ UTILIZAR TEMPLATE METHOD
         //chama ValidacaoService.validate();
     }
 
-    public void createTransacaoEntrada(Transacao transacao) throws AcaoInvalidaException{
-        if (transacao.getAtivo().getPreco() <= 0) {
+    public void createTransacaoEntrada() throws AcaoInvalidaException{
+        if (transacao.getPreco() <= 0) {
             throw new AcaoInvalidaException("O deposito precisa ser maior que 0");
         } else {
-            transacao.setTotalTransacao(transacao.getAtivo().getPreco());
+            transacao.setTotalTransacao(transacao.getPreco());
+            transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
+            saveTransacao(transacao);
         }
     }
 
-    public void createTransacaoVenda(Transacao transacao) throws QuantidadeInvalidaException {
-        double total = -(transacao.getQuantidade()) * transacao.getAtivo().getPreco();
+    public void createTransacaoVenda() throws QuantidadeInvalidaException {
+
+        double total = -(transacao.getQuantidade()) * transacao.getPreco();
+        transacao.setIdAtivo(ativoTransacao.getId());
         transacao.setTotalTransacao(total);
-        this.checkPosicao(transacao);
+        this.checkPosicao();
     }
 
-    public void createTransacaoCompra(Transacao transacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
-        double total = transacao.getQuantidade() * transacao.getAtivo().getPreco();
+    public void createTransacaoCompra() throws AcaoInvalidaException, QuantidadeInvalidaException {
+        double total = transacao.getQuantidade() * transacao.getPreco();
 
         if (this.getSaldo() - total < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
         } else {
+            transacao.setIdAtivo(ativoTransacao.getId());
             transacao.setTotalTransacao(total);
         }
 
-        this.checkPosicao(transacao);
+        this.checkPosicao();
     }
 
 
-    public void checkPosicao(Transacao transacao) throws QuantidadeInvalidaException {
-        Posicao posicao = posicaoService.findPosicaoByIdentificador(transacao.getAtivo().getIdentificador()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
+    public void checkPosicao() throws QuantidadeInvalidaException {
+        Posicao posicao = posicaoService.findPosicaoByIdAtivo(ativoTransacao.getId()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
 
         if(posicao == null){
             posicaoService.setPosicao(transacao);

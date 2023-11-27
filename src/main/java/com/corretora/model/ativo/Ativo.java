@@ -4,19 +4,26 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 
-@Embeddable
-public abstract class Ativo implements Serializable {
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_ativo", discriminatorType = DiscriminatorType.STRING)
+public abstract class Ativo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     protected String identificador;
     protected double preco;
 
+
+
     public Ativo() {
     }
-    
+
     public Ativo(double preco) {
         this.preco = preco;
     }
-    
+
     public Ativo(String identificador, double preco) {
         this.identificador = identificador;
         this.preco = preco;
@@ -39,7 +46,12 @@ public abstract class Ativo implements Serializable {
         this.identificador = identificador;
     }
 
-    public boolean isNomeNull() {
-    	return identificador == null;
+    public Long getId() {
+        return id;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

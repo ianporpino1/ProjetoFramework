@@ -1,21 +1,24 @@
 package com.corretora.model.ativo;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import org.springframework.stereotype.Component;
+
+
+@Entity
+@DiscriminatorValue("acao")
 public class Acao extends Ativo{
-    private String ticker;
 
+    String a;
+    public Acao(String ticker, double preco) {
+        super(ticker,preco);
+    }
 
-    public Acao(String ticker, double price) {
+    public Acao(double valor) {
     }
 
     public Acao() {
-        super();
-    }
 
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
     }
 }

@@ -1,8 +1,7 @@
 package com.corretora.dto;
 
-import java.math.BigDecimal;
 
-public class PosicaoDTO { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMAR HISTORICO)
+public class PosicaoDTO {
     private String ticker;
 
     private double precoMedio;
@@ -17,6 +16,9 @@ public class PosicaoDTO { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMAR HIS
         this.quantidadeTotal = quantidadeTotal;
         this.precoMedio = precoMedio;
         this.valorTotal = valorTotal;
+    }
+
+    public PosicaoDTO(int quantidadeTotal, double precoMedio, double valorTotal) {
     }
 
 

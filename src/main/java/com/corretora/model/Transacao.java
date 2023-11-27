@@ -3,8 +3,10 @@ package com.corretora.model;
 import com.corretora.model.ativo.Ativo;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
+import java.lang.annotation.Target;
 import java.sql.Date;
 import java.time.LocalDate;
 
@@ -14,10 +16,10 @@ public class Transacao implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    @Nullable//
-    private Ativo ativo;
 
+    private Long idAtivo;
+
+    private double preco;
     private int quantidade;
 
     private double totalTransacao;
@@ -29,21 +31,20 @@ public class Transacao implements Serializable {
 
     public Transacao(){}
 
-
-    public Ativo getAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(Ativo ativo) {
-        this.ativo = ativo;
-    }
-
     public double getTotal() {
         return totalTransacao;
     }
 
     public void setTotalTransacao(double totalTransacao) {
         this.totalTransacao = totalTransacao;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(double preco) {
+        this.preco = preco;
     }
 
     public int getQuantidade() {
@@ -84,5 +85,13 @@ public class Transacao implements Serializable {
 
     public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public Long getIdAtivo() {
+        return idAtivo;
+    }
+
+    public void setIdAtivo(Long idAtivo) {
+        this.idAtivo = idAtivo;
     }
 }

@@ -1,11 +1,11 @@
 package com.corretora.controller;
 
-import com.corretora.dto.apiResult.AcaoDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.AcaoDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.ativo.Acao;
-import com.corretora.model.ativo.Ativo;
 import com.corretora.model.TipoTransacao;
+import com.corretora.model.ativo.Ativo;
 import com.corretora.service.AtivoService;
 import com.corretora.service.TransacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@Validated
 public class ComprarController {
 
     @Autowired
@@ -42,9 +41,8 @@ public class ComprarController {
         model.addAttribute("ticker",ticker);
         try{
 
-            //result = (AcaoDTO) apiService.callApiQuote(ticker);
 
-            result = ativoService.recuperarAtivo(ticker);
+            result = (AcaoDTO) ativoService.recuperarAtivo(ticker);
 
             result.ticker = result.ticker.toUpperCase();
             model.addAttribute("symbol",result.ticker);
@@ -67,7 +65,6 @@ public class ComprarController {
         try{
 
             this.transacaoService.createTransacao(new Acao(result.ticker, result.price),quantidade, TipoTransacao.COMPRA);
-
 
         }catch (QuantidadeInvalidaException qie){
             model.addAttribute("errorMessage",qie.getMessage());

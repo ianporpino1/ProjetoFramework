@@ -30,8 +30,8 @@ public class DepositarController {
     @PostMapping("/depositar") 
     public String depositar(Model model, @RequestParam double valor) {
     	try {
-    		
-    		this.transacaoService.createTransacao(new Ativo(valor), "1", TipoTransacao.ENTRADA);
+
+    		this.transacaoService.createTransacao(new Acao(valor), "1", TipoTransacao.ENTRADA);
     		
     	}catch(QuantidadeInvalidaException qie) {
     		model.addAttribute("errorMessage",qie.getMessage());

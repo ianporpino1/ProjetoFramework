@@ -1,5 +1,6 @@
 package com.corretora.service.templateMethodImposto.prejuizoCompensarInterface;
 
+import com.corretora.dao.ResultadoRepository;
 import com.corretora.model.Resultado;
 import com.corretora.service.AutorizacaoService;
 import com.corretora.service.ResultadoService;
@@ -12,21 +13,21 @@ import java.time.LocalDate;
 public class PrejuizoCompensarAcaoService implements PrejuizoCompensarService{
 
     @Autowired
-    private ResultadoService resultadoService;
+    private ResultadoRepository resultadoRepository;
 
     @Autowired
     private AutorizacaoService autorizacaoService;
 
     @Override
     public void setPrejuizoCompensar(double total){
-        Resultado prejuizo = resultadoService.findResultadoByName("prejuizoCompensar");
+        Resultado prejuizo = resultadoRepository.findResultadoByName(autorizacaoService.LoadUsuarioLogado().getId(),"prejuizoCompensar");
         if(prejuizo==null){
             Resultado prejuizoCompensar = new Resultado();
             prejuizoCompensar.setAtivo("prejuizoCompensar");
             prejuizoCompensar.setResultado(total);
             prejuizoCompensar.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
             prejuizoCompensar.setData(Date.valueOf(LocalDate.now().plusMonths(1)));
-            resultadoService.saveResultado(prejuizoCompensar);
+            resultadoRepository.save(prejuizoCompensar);
 
         }
         else{
@@ -35,11 +36,11 @@ public class PrejuizoCompensarAcaoService implements PrejuizoCompensarService{
     }
 
     //opcional(somente para acoes)
-    public void atualizarPrejuizoCompensar(Resultado prejuizo, double total){
+    private void atualizarPrejuizoCompensar(Resultado prejuizo, double total){
         if(total > 0)
             prejuizo.setResultado(0);
         else
             prejuizo.setResultado(total);
-        resultadoService.saveResultado(prejuizo);
+        resultadoRepository.save(prejuizo);
     }
 }

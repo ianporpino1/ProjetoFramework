@@ -1,5 +1,6 @@
 package com.corretora.controller;
 
+import com.corretora.model.ativo.Acao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +32,7 @@ public class RetirarController {
     public String retirar(Model model, @RequestParam double valor) {
     	try {	
     		
-    		this.transacaoService.setTransacao(new Ativo(valor), "1", TipoTransacao.SAIDA);
+    		this.transacaoService.createTransacao(new Acao(valor), "1", TipoTransacao.SAIDA);
     		
     	}catch(QuantidadeInvalidaException qie) {
     		model.addAttribute("errorMessage",qie.getMessage());
