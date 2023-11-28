@@ -58,6 +58,7 @@ public class ResultadoService {
     }
 
     public Imposto calcularIR(int mes, int ano) {
+        imposto= new Imposto();
         List<ResultadoDTO> resultadoDTOList = findAllResultadoByData(mes,ano);
         calcularResultadoTotal(resultadoDTOList);
 

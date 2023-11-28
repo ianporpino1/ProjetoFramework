@@ -17,6 +17,11 @@ public class Imposto {
 
     }
 
+    public Imposto(double valorImposto, double lucro) {
+        this.valorImposto =valorImposto;
+        this.lucro=lucro;
+    }
+
     public double getValorImposto() {
         return valorImposto;
     }

@@ -31,12 +31,9 @@ public class DepositarController {
     public String depositar(Model model, @RequestParam double valor) {
     	try {
 
-    		this.transacaoService.createTransacao(new Acao(valor), "1", TipoTransacao.ENTRADA);
+    		this.transacaoService.createTransacao(valor, TipoTransacao.ENTRADA);
     		
-    	}catch(QuantidadeInvalidaException qie) {
-    		model.addAttribute("errorMessage",qie.getMessage());
-            return "error/quantidadeError";
-    	}catch (AcaoInvalidaException aie){
+    	} catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());
             return "error/acaoError";
         }

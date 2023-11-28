@@ -36,8 +36,6 @@ public class VenderController {
     private AcaoDTO result;
 
 
-
-
     @GetMapping("acao/vender")
     public String pesquisaVenderAcao(Model model){
         List<String> tickers = posicaoService.findTickers();
@@ -71,7 +69,7 @@ public class VenderController {
         model.addAttribute("quantidade", quantidade);
         try{
 
-            this.transacaoService.createTransacao(new Acao(result.ticker, result.price),quantidade, TipoTransacao.VENDA);
+            this.transacaoService.createTransacaoAtivo(new Acao(result.ticker, result.price),quantidade, TipoTransacao.VENDA);
 
         }catch (QuantidadeInvalidaException qie){
             model.addAttribute("errorMessage",qie.getMessage());

@@ -30,14 +30,11 @@ public class RetirarController {
     
     @PostMapping("/retirar") 
     public String retirar(Model model, @RequestParam double valor) {
-    	try {	
+    	try {
+
+            this.transacaoService.createTransacao(valor, TipoTransacao.SAIDA);
     		
-    		this.transacaoService.createTransacao(new Acao(valor), "1", TipoTransacao.SAIDA);
-    		
-    	}catch(QuantidadeInvalidaException qie) {
-    		model.addAttribute("errorMessage",qie.getMessage());
-            return "error/quantidadeError";
-    	}catch (AcaoInvalidaException aie){
+    	} catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());
             return "error/acaoError";
         }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,6 @@ public class PosicaoService {
     @Autowired
     private AtivoRepository ativoRepository;
 
-    private Ativo ativo;
-
 
     public Posicao findPosicaoByIdentificador(String identificador){
         return this.posicaoRepository.findPosicaoByIdentificador(identificador,autorizacaoService.LoadUsuarioLogado().getId());
@@ -47,10 +44,9 @@ public class PosicaoService {
 
     public List<String> findTickers(){ return this.posicaoRepository.findTickers(autorizacaoService.LoadUsuarioLogado().getId());}
 
-    public void setPosicao(Transacao transacao){
+    public void setPosicao(Transacao transacao, Ativo ativo){
         Posicao posicao = new Posicao();
-        Optional<Ativo> ativo1 = ativoRepository.findById(transacao.getIdAtivo());
-        ativo1.ifPresent(value -> ativo = ativo1.get());
+
 
         posicao.setIdAtivo(transacao.getIdAtivo());
         posicao.setQuantidadeTotal(transacao.getQuantidade());
@@ -102,7 +98,7 @@ public class PosicaoService {
     }
 
     @Transactional
-    public void atualizarPosicaoVenda(Transacao transacao, Posicao posicao) throws QuantidadeInvalidaException {
+    public void atualizarPosicaoVenda(Transacao transacao, Posicao posicao, Ativo ativo) throws QuantidadeInvalidaException {
         if(posicao.getQuantidadeTotal() - transacao.getQuantidade() < 0){
             throw new QuantidadeInvalidaException("QUANTIDADE MAXIMA DE VENDA: "  + posicao.getQuantidadeTotal());
         }
@@ -124,7 +120,7 @@ public class PosicaoService {
 
 
         if(posicao.getQuantidadeTotal() == 0){               //identificador
-            posicaoRepository.deleteByTicker(ativo.getIdentificador(),autorizacaoService.LoadUsuarioLogado().getId());
+            ativoRepository.deleteByIdentificador(ativo.getIdentificador()); //mudar
         }
         else{
             posicaoRepository.save(posicao);

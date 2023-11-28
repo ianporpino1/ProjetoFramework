@@ -31,6 +31,10 @@ public class Transacao implements Serializable {
 
     public Transacao(){}
 
+    public Transacao(double preco) {
+        this.preco = preco;
+    }
+
     public double getTotal() {
         return totalTransacao;
     }

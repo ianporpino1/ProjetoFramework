@@ -67,34 +67,46 @@ public class TransacaoService {
     
 
     public List<TransacaoResumo> findFormattedTransacoes(){
-        List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes(autorizacaoService.LoadUsuarioLogado().getId());
-
+        List<Object[]> resultados = transacaoRepository.recuperarResumoTransacoes(autorizacaoService.LoadUsuarioLogado().getId());
         return createResumo(resultados);
     }
 
     public List<TransacaoResumo> createResumo(List<Object[]> resultados){
         List<TransacaoResumo> resumos = new ArrayList<>();
         for (Object[] resultado : resultados) {
-            String ticker = (String) resultado[0];
-            int quantidade = (int) resultado[1];
-            double preco = (double) resultado[2];
-            double total = (double) resultado[3];
+
             int intTipo = (Byte) resultado[4];
             Date data = (Date) resultado[5];
-
             String tipoTransacao = null;
+            String ticker= null;
+            int quantidade = 1;
+            double preco = 0;
+            double total= 0;
+
             if(intTipo == 0){
                 tipoTransacao = "COMPRA";
+                ticker = (String) resultado[0];
+                quantidade = (int) resultado[1];
+                preco = (double) resultado[2];
+                total = (double) resultado[3];
             }
             else if(intTipo == 1){
                 tipoTransacao = "VENDA";
+                ticker = (String) resultado[0];
+                quantidade = (int) resultado[1];
+                preco = (double) resultado[2];
+                total = (double) resultado[3];
             }
             else if(intTipo == 2){
                 tipoTransacao = "DEPOSITO";
+                total = (double) resultado[3];
+                preco = total;
                 ticker =  tipoTransacao;
             }
             else if(intTipo == 3){
                 tipoTransacao = "RETIRADA";
+                total = (double) resultado[3];
+                preco = total;
                 ticker =  tipoTransacao;
             }
 
@@ -112,8 +124,9 @@ public class TransacaoService {
 
         transacaoRepository.save(transacao);
     }
+
     //REFATORAR PARA TEMPLATE METHOD //ATIVO = ACAO, IMOVEL, VEICULO
-    public void createTransacao(Ativo ativo, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
+    public void createTransacaoAtivo(Ativo ativo, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
         transacao = new Transacao();
         long userId = autorizacaoService.LoadUsuarioLogado().getId();
 
@@ -149,22 +162,39 @@ public class TransacaoService {
         transacao.setPreco(ativoTransacao.getPreco());
 
         
-        if(tipoTransacao == TipoTransacao.SAIDA){
-            createTransacaoSaida();
-        } else if(tipoTransacao == TipoTransacao.ENTRADA){
-            createTransacaoEntrada();
-        } else if(tipoTransacao == TipoTransacao.VENDA){
-            createTransacaoVenda();
-        } else if(tipoTransacao == TipoTransacao.COMPRA){
-            createTransacaoCompra();
-       }
+
+         if(tipoTransacao == TipoTransacao.VENDA){
+            createTransacaoVenda(ativoTransacao);
+         }
+         else if(tipoTransacao == TipoTransacao.COMPRA){
+            createTransacaoCompra(ativoTransacao);
+         }
         
         this.saveTransacao(transacao);
     }
 
-    public void createTransacaoSaida() throws AcaoInvalidaException{
-        transacao.setPreco(transacao.getPreco());
-        double total = -(transacao.getQuantidade()) * transacao.getPreco();
+    public void createTransacao(double valor, TipoTransacao tipoTransacao) throws AcaoInvalidaException {
+        transacao = new Transacao();
+
+        long userId = autorizacaoService.LoadUsuarioLogado().getId();
+
+        transacao.setTipoTransacao(tipoTransacao);
+        transacao.setTodayData();
+        transacao.setIdUsuario(userId);
+
+
+        if(tipoTransacao == TipoTransacao.SAIDA){
+            createTransacaoSaida(valor);
+        }
+        else if(tipoTransacao == TipoTransacao.ENTRADA) {
+            createTransacaoEntrada(valor);
+        }
+
+        this.saveTransacao(transacao);
+    }
+
+    public void createTransacaoSaida(double valor) throws AcaoInvalidaException{
+        double total = -valor;
         if (this.getSaldo() - total < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a retirada");
         } else {
@@ -173,49 +203,48 @@ public class TransacaoService {
         //chama ValidacaoService.validate();
     }
 
-    public void createTransacaoEntrada() throws AcaoInvalidaException{
-        if (transacao.getPreco() <= 0) {
+    public void createTransacaoEntrada(double valor) throws AcaoInvalidaException{
+        if (valor <= 0) {
             throw new AcaoInvalidaException("O deposito precisa ser maior que 0");
         } else {
-            transacao.setTotalTransacao(transacao.getPreco());
-            transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
-            saveTransacao(transacao);
+            transacao.setTotalTransacao(valor);
         }
+        //chama ValidacaoService.validate();
     }
 
-    public void createTransacaoVenda() throws QuantidadeInvalidaException {
+    public void createTransacaoVenda(Ativo ativoTransacao) throws QuantidadeInvalidaException {
 
         double total = -(transacao.getQuantidade()) * transacao.getPreco();
-        transacao.setIdAtivo(ativoTransacao.getId());
+        transacao.setIdAtivo(this.ativoTransacao.getId());
         transacao.setTotalTransacao(total);
-        this.checkPosicao();
+        this.checkPosicao(ativoTransacao);
     }
 
-    public void createTransacaoCompra() throws AcaoInvalidaException, QuantidadeInvalidaException {
+    public void createTransacaoCompra(Ativo ativoTransacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
         double total = transacao.getQuantidade() * transacao.getPreco();
 
         if (this.getSaldo() - total < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
         } else {
-            transacao.setIdAtivo(ativoTransacao.getId());
+            transacao.setIdAtivo(this.ativoTransacao.getId());
             transacao.setTotalTransacao(total);
         }
 
-        this.checkPosicao();
+        this.checkPosicao(ativoTransacao);
     }
 
 
-    public void checkPosicao() throws QuantidadeInvalidaException {
-        Posicao posicao = posicaoService.findPosicaoByIdAtivo(ativoTransacao.getId()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
+    public void checkPosicao(Ativo ativoTransacao) throws QuantidadeInvalidaException {
+        Posicao posicao = posicaoService.findPosicaoByIdAtivo(this.ativoTransacao.getId()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
 
         if(posicao == null){
-            posicaoService.setPosicao(transacao);
+            posicaoService.setPosicao(transacao,ativoTransacao);
         }
         else if (transacao.getTipoTransacao() == TipoTransacao.COMPRA ){
             posicaoService.atualizarPosicaoCompra(transacao,posicao);
         }
         else if (transacao.getTipoTransacao() == TipoTransacao.VENDA ){
-            posicaoService.atualizarPosicaoVenda(transacao,posicao);
+            posicaoService.atualizarPosicaoVenda(transacao,posicao,ativoTransacao);
         }
     }
 

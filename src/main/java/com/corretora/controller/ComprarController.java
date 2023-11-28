@@ -64,7 +64,7 @@ public class ComprarController {
         model.addAttribute("quantidade", quantidade);
         try{
 
-            this.transacaoService.createTransacao(new Acao(result.ticker, result.price),quantidade, TipoTransacao.COMPRA);
+            this.transacaoService.createTransacaoAtivo(new Acao(result.ticker, result.price),quantidade, TipoTransacao.COMPRA);
 
         }catch (QuantidadeInvalidaException qie){
             model.addAttribute("errorMessage",qie.getMessage());
