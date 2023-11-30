@@ -63,11 +63,7 @@ public class TransacaoService {
     	}
     }
 
-    public List<Transacao> findAllTransacao(){
 
-        return (List<Transacao>) transacaoRepository.findAll();
-    }
-    
 
     public List<TransacaoResumo> findFormattedTransacoes(){
         List<Object[]> resultados = transacaoRepository.recuperarResumoTransacoes(autorizacaoService.LoadUsuarioLogado().getId());
@@ -128,7 +124,7 @@ public class TransacaoService {
         transacaoRepository.save(transacao);
     }
 
-    //REFATORAR PARA TEMPLATE METHOD //ATIVO = ACAO, IMOVEL, VEICULO
+
     public void createTransacaoAtivo(Ativo ativo, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
         transacao = new Transacao();
         long userId = autorizacaoService.LoadUsuarioLogado().getId();
@@ -190,12 +186,11 @@ public class TransacaoService {
         transacao.setTotalTransacao(valor);
     }
 
-    public void createTransacaoVenda(Ativo ativoTransacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
+    public void createTransacaoVenda(Ativo ativoTransacao) throws QuantidadeInvalidaException {
 
         double total = -(transacao.getQuantidade()) * transacao.getPreco();
-        validacaoService.validate(total);
         
-        transacao.setIdAtivo(this.ativoTransacao.getId());
+        transacao.setIdAtivo(ativoTransacao.getId());
         transacao.setTotalTransacao(total);
         
         this.checkPosicao(ativoTransacao);
@@ -206,7 +201,7 @@ public class TransacaoService {
 
         validacaoService.validate(this.getSaldo(), total);
         
-        transacao.setIdAtivo(this.ativoTransacao.getId());
+        transacao.setIdAtivo(ativoTransacao.getId());
         transacao.setTotalTransacao(total);
 
         this.checkPosicao(ativoTransacao);
@@ -214,7 +209,7 @@ public class TransacaoService {
 
 
     public void checkPosicao(Ativo ativoTransacao) throws QuantidadeInvalidaException {
-        Posicao posicao = posicaoService.findPosicaoByIdAtivo(this.ativoTransacao.getId()); //IDENTIFICADOR(ACAO: TICKER, IMOVEL: SEQUENCIAL, CARRO: PLACA)
+        Posicao posicao = posicaoService.findPosicaoByIdAtivo(this.ativoTransacao.getId());
 
         if(posicao == null){
             posicaoService.setPosicao(transacao,ativoTransacao);

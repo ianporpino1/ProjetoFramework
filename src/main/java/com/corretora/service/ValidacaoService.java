@@ -20,8 +20,7 @@ public class ValidacaoService {
 	}
 	
 	public void validate(double saldo, double valor) throws AcaoInvalidaException{
-		double total = -valor;
-        if (saldo - total < 0) {
+        if (saldo - valor < 0) {
             throw new AcaoInvalidaException("Saldo insuficiente para realizar a operação");
         } 
 	}

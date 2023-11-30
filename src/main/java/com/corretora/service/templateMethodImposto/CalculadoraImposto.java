@@ -10,14 +10,16 @@ public abstract class CalculadoraImposto {
 
         if(!isIsento){
             if( lucro > 0) {
-                imposto.setLucro(calcularValorImposto(lucro));
+                imposto.setValorImposto(calcularValorImposto(lucro));
+                imposto.setLucro(lucro);
+                imposto.setVolume(volume);
                 return imposto;
             }
         }
         if(lucro < 0)
-            calcularPrejuizoCompensar(imposto.getLucro());
+            calcularPrejuizoCompensar(lucro);
 
-        return new Imposto(0,0);
+        return new Imposto(0,lucro);
     }
 
 

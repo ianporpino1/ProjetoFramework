@@ -73,7 +73,7 @@ public class ResultadoService {
         double volume =0;
         for(ResultadoDTO resultado : resultadoDTOList){
             lucro += resultado.getResultado();
-            volume+= resultado.getVolume();
+            volume+= -(resultado.getVolume());
         }
         lucro = lucro*100;
         lucro = Math.round(lucro);
@@ -81,7 +81,7 @@ public class ResultadoService {
 
         volume = volume*100;
         volume = Math.round(volume);
-        imposto.setLucro(volume/100);
+        imposto.setVolume(volume/100);
     }
 
     public Imposto getImposto() {
