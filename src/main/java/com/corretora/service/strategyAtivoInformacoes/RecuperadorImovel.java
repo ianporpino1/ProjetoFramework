@@ -1,9 +1,8 @@
 package com.corretora.service.strategyAtivoInformacoes;
 
-import com.corretora.dto.recuperadorDTO.Ativo.AcaoDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.ImovelDTO;
 import com.corretora.dto.recuperadorDTO.Ativo.AtivoDTO;
 import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
-import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoAcaoDTO.Root;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 @Service
 @PropertySource("classpath:application-dev.properties")
-public class RecuperadorAcao implements Recuperador {
+public class RecuperadorImovel implements Recuperador {
 
     @Value("${apiKey}")
     private String apiKey;
@@ -36,7 +35,7 @@ public class RecuperadorAcao implements Recuperador {
 
             ObjectMapper om = new ObjectMapper();
 
-            AcaoDTO acao = om.readValue(response.getBody(), AcaoDTO.class);
+            ImovelDTO acao = om.readValue(response.getBody(), ImovelDTO.class);
             acao.ticker = ticker;
             
             return acao;

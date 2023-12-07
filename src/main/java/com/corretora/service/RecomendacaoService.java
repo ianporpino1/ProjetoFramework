@@ -1,7 +1,6 @@
 package com.corretora.service;
 
 import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
-import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoAcaoDTO.Attributes;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.service.strategyAtivoInformacoes.Recuperador;
 import com.corretora.service.strategyRecomendacao.GeradorRecomendacao;

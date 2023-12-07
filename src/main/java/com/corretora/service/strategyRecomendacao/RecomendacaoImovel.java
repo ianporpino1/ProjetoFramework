@@ -1,12 +1,11 @@
 package com.corretora.service.strategyRecomendacao;
 
-import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoAcaoDTO.Attributes;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 @Service
-public class RecomendacaoAcao implements GeradorRecomendacao{
+public class RecomendacaoImovel implements GeradorRecomendacao{
 
     @Override
     public List<Double> gerarRecomendacao(Attributes attributes) {

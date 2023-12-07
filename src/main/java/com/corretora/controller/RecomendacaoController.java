@@ -1,8 +1,6 @@
 package com.corretora.controller;
 
-import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoAcaoDTO.Attributes;
 import com.corretora.excecao.AcaoInvalidaException;
-import com.corretora.service.AtivoService;
 import com.corretora.service.RecomendacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
