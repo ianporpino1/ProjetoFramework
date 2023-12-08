@@ -5,6 +5,7 @@ import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.util.List;
 
 
 public interface Recuperador {

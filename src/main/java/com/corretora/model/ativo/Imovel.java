@@ -8,6 +8,12 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("imovel")
 public class Imovel extends Ativo{
 
+    private double latitude;
+
+    private double longitude;
+
+    private String endereco;
+
 
     public Imovel(String ticker, double preco) {
         super(ticker,preco);

@@ -12,15 +12,14 @@ import java.util.*;
 
 @Service
 public class RecomendacaoService {
-    @Autowired //acho q n funciona
+    @Autowired
     private GeradorRecomendacao geradorRecomendacao;
 
     @Autowired
     private Recuperador recuperador;
 
-    @Autowired
-    private AtivoService ativoService;
-    public List<Double> processarInformacoes(Attributes attributes){
+
+    public List<Double> processarInformacoes(InformacoesDTO attributes){
 
         return geradorRecomendacao.gerarRecomendacao(attributes);
 

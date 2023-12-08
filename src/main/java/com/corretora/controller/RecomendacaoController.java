@@ -1,5 +1,7 @@
 package com.corretora.controller;
 
+import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
+import com.corretora.dto.recuperadorDTO.Informacoes.ListaInfoImovel;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.service.RecomendacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,7 +20,7 @@ public class RecomendacaoController {
     @Autowired
     RecomendacaoService recomendacaoService;
 
-    Attributes attributes;
+    ListaInfoImovel attributes;
 
     @GetMapping("/recomendacao")
     public String recomendacaoIndex(Model model){
@@ -32,7 +34,7 @@ public class RecomendacaoController {
         model.addAttribute("ticker", ticker.toUpperCase());
         try {
 
-            attributes = (Attributes) recomendacaoService.recuperarInformacoes(ticker);
+            attributes = (ListaInfoImovel) recomendacaoService.recuperarInformacoes(ticker);
 
         } catch (AcaoInvalidaException aie) {
             model.addAttribute("errorMessage", aie.getMessage());

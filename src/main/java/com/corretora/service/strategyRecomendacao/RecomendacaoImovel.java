@@ -1,5 +1,8 @@
 package com.corretora.service.strategyRecomendacao;
 
+import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
+import com.corretora.dto.recuperadorDTO.Informacoes.ListaInfoImovel;
+import com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoImovelDTO.InfoImovelDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,20 +11,27 @@ import java.util.List;
 public class RecomendacaoImovel implements GeradorRecomendacao{
 
     @Override
-    public List<Double> gerarRecomendacao(Attributes attributes) {
-        List<Double> resultado = new ArrayList<>();
-        double retornoEmPorcentagemEsperado = (1/attributes.evEbitda)*100;
-        retornoEmPorcentagemEsperado = retornoEmPorcentagemEsperado*100;
-        retornoEmPorcentagemEsperado = Math.round(retornoEmPorcentagemEsperado);
-        retornoEmPorcentagemEsperado = retornoEmPorcentagemEsperado/100;
+    public List<Double> gerarRecomendacao(InformacoesDTO informacoesDTO) {
+        double nota=0;
+        if (informacoesDTO instanceof ListaInfoImovel listaInfoImovel) {
+            List<InfoImovelDTO> list = listaInfoImovel.infoImovelDTOList;
 
-        double priceEarningsRatio = attributes.lastClosePriceEarningsRatio*100;
-        priceEarningsRatio = Math.round(priceEarningsRatio);
-        priceEarningsRatio = priceEarningsRatio/100;
+            for(InfoImovelDTO lugar: list){
+                if(lugar.id >= 17069 && lugar.id <= 17070){
+                    nota+=1;
+                }
+                if(lugar.id >= 12044 && lugar.id <= 12061){
+                    nota+=1.5;
+                }
+                if(lugar.id >= 13026 && lugar.id <= 13065){
+                    nota+=0.5;
+                }
+            }
+        }
 
-        resultado.add(retornoEmPorcentagemEsperado);
-        resultado.add(priceEarningsRatio);
 
-        return resultado;
+        ArrayList<Double> notaFinal = new ArrayList<>();
+        notaFinal.add(nota);
+        return notaFinal;
     }
 }

@@ -1,7 +1,9 @@
 package com.corretora.dto.recuperadorDTO.Informacoes.RecomendacaoImovelDTO; 
+import com.corretora.dto.recuperadorDTO.Informacoes.InformacoesDTO;
+
 import java.util.ArrayList;
-import java.util.List;
+
 public class Result{
-    public ArrayList<Category> categories;
+    public ArrayList<InformacoesDTO> categories;
     public String name;
 }

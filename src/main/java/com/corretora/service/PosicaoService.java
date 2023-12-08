@@ -119,8 +119,8 @@ public class PosicaoService {
         posicao.setStatusPosicao();
 
 
-        if(posicao.getQuantidadeTotal() == 0){               //identificador
-            ativoRepository.deleteByIdentificador(ativo.getIdentificador()); //mudar
+        if(posicao.getQuantidadeTotal() == 0){
+            ativoRepository.deleteByIdentificador(ativo.getIdentificador());
         }
         else{
             posicaoRepository.save(posicao);

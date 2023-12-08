@@ -1,6 +1,6 @@
 package com.corretora.controller;
 
-import com.corretora.dto.recuperadorDTO.Ativo.ImovelDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.ImovelDTO.ImovelDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.ativo.Imovel;
@@ -47,29 +47,22 @@ public class VenderController {
     @PostMapping("acao/vender")
     public String getVenderAcao(Model model, @RequestParam String ticker, RedirectAttributes redirectAttributes) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
-        try{
+        result = new ImovelDTO();
+        result.propertyId = ticker;
 
-            result = (ImovelDTO) ativoService.recuperarAtivo(ticker);
-
-            model.addAttribute("symbol",result.ticker);
-            model.addAttribute("price",result.price);
-
-        }catch (AcaoInvalidaException aie){
-            model.addAttribute("errorMessage",aie.getMessage());
-            return "error/acaoError";
-        }
-
-
-        redirectAttributes.addAttribute("ticker", result.ticker);
+        redirectAttributes.addAttribute("ticker", result.propertyId);
         return "redirect:/acao/vender/{ticker}";
     }
 
     @PostMapping("acao/acaoVender")
-    public String vender(Model model, @RequestParam String quantidade){
-        model.addAttribute("quantidade", quantidade);
+    public String vender(Model model, @RequestParam String precoString){
+        model.addAttribute("precoString", precoString);
+        result.price =precoString;
+        String quantidade="1";
         try{
+            double preco = Double.parseDouble(precoString);
 
-            this.transacaoService.createTransacaoAtivo(new Imovel(result.ticker, result.price),quantidade, TipoTransacao.VENDA);
+            this.transacaoService.createTransacaoAtivo(new Imovel(result.propertyId, preco),quantidade, TipoTransacao.VENDA);
 
         }catch (QuantidadeInvalidaException qie){
             model.addAttribute("errorMessage",qie.getMessage());
@@ -85,8 +78,8 @@ public class VenderController {
 
 
     @GetMapping("/acao/vender/{ticker}")
-    public String showComprarAcao(Model model) {
-        model.addAttribute("symbol",result.ticker);
+    public String showVenderAcao(Model model) {
+        model.addAttribute("symbol",result.propertyId);
         model.addAttribute("price",result.price);
         return "venderAcao";
     }

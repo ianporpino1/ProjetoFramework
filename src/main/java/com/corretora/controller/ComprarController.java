@@ -1,6 +1,8 @@
 package com.corretora.controller;
 
-import com.corretora.dto.recuperadorDTO.Ativo.ImovelDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.AtivoDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.ImovelDTO.ImovelDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.ListaImovelDTO;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.ativo.Imovel;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 public class ComprarController {
@@ -40,11 +44,12 @@ public class ComprarController {
         try{
 
 
-            result = (ImovelDTO) ativoService.recuperarAtivo(ticker);
+            ListaImovelDTO resultLista = (ListaImovelDTO) ativoService.recuperarAtivo(ticker);
 
-            result.ticker = result.ticker.toUpperCase();
-            model.addAttribute("symbol",result.ticker);
-            model.addAttribute("price",result.price);
+            result = resultLista.imovelDTOList.get(0);
+            model.addAttribute("symbol",result.propertyId );
+            model.addAttribute("price",result.price );
+            model.addAttribute("url",result.url);
 
 
         }catch (AcaoInvalidaException aie){
@@ -52,7 +57,8 @@ public class ComprarController {
             return "error/acaoError";
         }
 
-        redirectAttributes.addAttribute("ticker", result.ticker);
+        redirectAttributes.addAttribute("ticker", result.propertyId);
+        redirectAttributes.addAttribute("url", result.url);
         return "redirect:/acao/comprar/{ticker}";
 
     }
@@ -61,8 +67,8 @@ public class ComprarController {
     public String comprar(Model model, @RequestParam String quantidade) {
         model.addAttribute("quantidade", quantidade);
         try{
-
-            this.transacaoService.createTransacaoAtivo(new Imovel(result.ticker, result.price),quantidade, TipoTransacao.COMPRA);
+            double preco = Double.parseDouble(result.price);
+            this.transacaoService.createTransacaoAtivo(new Imovel(result.propertyId, preco),quantidade, TipoTransacao.COMPRA);
 
         }catch (QuantidadeInvalidaException qie){
             model.addAttribute("errorMessage",qie.getMessage());
@@ -78,8 +84,9 @@ public class ComprarController {
 
     @GetMapping("/acao/comprar/{ticker}")
     public String showComprarAcao(Model model) {
-        model.addAttribute("symbol",result.ticker);
+        model.addAttribute("symbol",result.propertyId);
         model.addAttribute("price",result.price);
+        model.addAttribute("url",result.url);
         return "comprarAcao";
     }
 
