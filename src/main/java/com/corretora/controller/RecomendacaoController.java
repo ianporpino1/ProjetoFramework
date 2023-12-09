@@ -31,7 +31,7 @@ public class RecomendacaoController {
 
     @PostMapping("/recomendacao/informacoes")
     public String getRecomendacaoAcao(Model model,@RequestParam String ticker) throws JsonProcessingException {
-        model.addAttribute("ticker", ticker.toUpperCase());
+        model.addAttribute("ticker", ticker);
         try {
 
             attributes = (ListaInfoImovel) recomendacaoService.recuperarInformacoes(ticker);

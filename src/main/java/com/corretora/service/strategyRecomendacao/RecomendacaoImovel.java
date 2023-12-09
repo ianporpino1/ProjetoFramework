@@ -13,19 +13,31 @@ public class RecomendacaoImovel implements GeradorRecomendacao{
     @Override
     public List<Double> gerarRecomendacao(InformacoesDTO informacoesDTO) {
         double nota=0;
-        if (informacoesDTO instanceof ListaInfoImovel listaInfoImovel) {
-            List<InfoImovelDTO> list = listaInfoImovel.infoImovelDTOList;
+        if (informacoesDTO instanceof ListaInfoImovel) {
+            List<InfoImovelDTO> list =  ((ListaInfoImovel) informacoesDTO).infoImovelDTOList;
 
+            double escola=0;
+            double restaurante=0;
+            double store=0;
             for(InfoImovelDTO lugar: list){
-                if(lugar.id >= 17069 && lugar.id <= 17070){
-                    nota+=1;
+                System.out.println(lugar.name);
+                if(nota>=10){
+                    nota=10;
+                    break;
                 }
-                if(lugar.id >= 12044 && lugar.id <= 12061){
+                if(escola <= 3 && lugar.distance <=500 && lugar.name.contains("School")){
                     nota+=1.5;
+                    escola++;
                 }
-                if(lugar.id >= 13026 && lugar.id <= 13065){
+                if(restaurante <= 5 && lugar.distance <=500 && lugar.name.contains("Restaurant")){
                     nota+=0.5;
+                    restaurante++;
                 }
+                if( store <= 2 && lugar.distance <=500 && (lugar.name.contains("Grocery") || lugar.name.contains("Store"))){
+                    nota+=1.5;
+                    store++;
+                }
+
             }
         }
 

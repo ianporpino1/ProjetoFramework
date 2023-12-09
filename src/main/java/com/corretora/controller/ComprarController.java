@@ -1,8 +1,7 @@
 package com.corretora.controller;
 
-import com.corretora.dto.recuperadorDTO.Ativo.AtivoDTO;
 import com.corretora.dto.recuperadorDTO.Ativo.ImovelDTO.ImovelDTO;
-import com.corretora.dto.recuperadorDTO.Ativo.ListaImovelDTO;
+import com.corretora.dto.recuperadorDTO.Ativo.ListaImovel;
 import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.ativo.Imovel;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 @Controller
 public class ComprarController {
@@ -44,7 +41,7 @@ public class ComprarController {
         try{
 
 
-            ListaImovelDTO resultLista = (ListaImovelDTO) ativoService.recuperarAtivo(ticker);
+            ListaImovel resultLista = (ListaImovel) ativoService.recuperarAtivo(ticker);
 
             result = resultLista.imovelDTOList.get(0);
             model.addAttribute("symbol",result.propertyId );

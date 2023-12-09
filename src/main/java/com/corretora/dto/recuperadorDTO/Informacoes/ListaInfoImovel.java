@@ -9,6 +9,7 @@ import java.util.List;
 public class ListaInfoImovel implements InformacoesDTO {
     public List<InfoImovelDTO> infoImovelDTOList;
 
-    public ListaInfoImovel(ArrayList<InformacoesDTO> categories) {
+    public ListaInfoImovel(ArrayList<InfoImovelDTO> results) {
+        infoImovelDTOList = results;
     }
 }
