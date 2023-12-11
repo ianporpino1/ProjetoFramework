@@ -17,6 +17,9 @@ public class ValidacaoService {
         if(intQuantidade <= 0){
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
+        if(intQuantidade > 1){
+            throw new QuantidadeInvalidaException("Quantidade Deve Ser Menor que 1");
+        }
 	}
 	
 	public void validate(double saldo, double valor) throws AcaoInvalidaException{
