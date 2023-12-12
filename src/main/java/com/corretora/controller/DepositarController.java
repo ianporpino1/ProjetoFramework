@@ -1,5 +1,7 @@
 package com.corretora.controller;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +27,7 @@ public class DepositarController {
     }
     
     @PostMapping("/depositar") 
-    public String depositar(Model model, @RequestParam double valor) {
+    public String depositar(Model model, @RequestParam(defaultValue = "0.0") double valor) {
     	try {
 
     		this.transacaoService.createTransacao(valor, TipoTransacao.ENTRADA);

@@ -61,7 +61,7 @@ public class ComprarController {
     }
 
     @PostMapping("/acaoComprar")
-    public String comprar(Model model, @RequestParam String quantidade) {
+    public String comprar(Model model, @RequestParam(defaultValue = "0.0") String quantidade) {
         model.addAttribute("quantidade", quantidade);
         try{
             double preco = Double.parseDouble(result.price);

@@ -26,7 +26,7 @@ public class RetirarController {
     }
     
     @PostMapping("/retirar") 
-    public String retirar(Model model, @RequestParam double valor) {
+    public String retirar(Model model, @RequestParam(defaultValue = "0.0") double valor) {
     	try {
 
             this.transacaoService.createTransacao(valor, TipoTransacao.SAIDA);

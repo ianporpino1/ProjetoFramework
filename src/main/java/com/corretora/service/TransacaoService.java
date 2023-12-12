@@ -7,6 +7,7 @@ import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.*;
 import com.corretora.model.ativo.Ativo;
+import com.corretora.service.strategyValidacao.ValidacaoAtivo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,8 @@ public class TransacaoService {
     private  PosicaoService posicaoService;
     
     @Autowired
-    private ValidacaoService validacaoService;
+    private ValidacaoAtivo validacaoAtivo;
+
 
     @Autowired
     private AtivoRepository ativoRepository;
@@ -138,7 +140,7 @@ public class TransacaoService {
             ativoTransacao = ativoService.saveAtivo(ativoTransacao);
         }
 
-		validacaoService.validate(quantidade);
+		validacaoAtivo.validateQuantidade(quantidade);
 
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(Integer.parseInt(quantidade));
@@ -175,13 +177,13 @@ public class TransacaoService {
     }
 
     public void createTransacaoSaida(double valor) throws AcaoInvalidaException{
-    	validacaoService.validate(this.getSaldo(), valor);
+    	validacaoAtivo.validateSaldo(this.getSaldo(), valor);
     	
         transacao.setTotalTransacao(-valor);
     }
 
     public void createTransacaoEntrada(double valor) throws AcaoInvalidaException{
-    	validacaoService.validate(valor);
+    	validacaoAtivo.validateDepositoRetirada(valor);
     	
         transacao.setTotalTransacao(valor);
     }
@@ -199,7 +201,7 @@ public class TransacaoService {
     public void createTransacaoCompra(Ativo ativoTransacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
         double total = transacao.getQuantidade() * transacao.getPreco();
 
-        validacaoService.validate(this.getSaldo(), total);
+        validacaoAtivo.validateSaldo(this.getSaldo(), total);
         
         transacao.setIdAtivo(ativoTransacao.getId());
         transacao.setTotalTransacao(total);

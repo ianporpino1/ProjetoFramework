@@ -12,11 +12,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -49,6 +47,8 @@ public class RecuperadorImovel implements Recuperador {
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
+        }catch (HttpClientErrorException h){
+            throw new AcaoInvalidaException("Cidade invalida");
         }
 
         try {
@@ -62,6 +62,9 @@ public class RecuperadorImovel implements Recuperador {
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
+        }
+        catch (HttpClientErrorException h){
+            throw new AcaoInvalidaException("Cidade invalida");
         }
     }
 

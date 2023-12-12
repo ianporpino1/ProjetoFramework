@@ -55,7 +55,7 @@ public class VenderController {
     }
 
     @PostMapping("acao/acaoVender")
-    public String vender(Model model, @RequestParam String precoString){
+    public String vender(Model model, @RequestParam(defaultValue = "0.0") String precoString){
         model.addAttribute("precoString", precoString);
         result.price =precoString;
         String quantidade="1";
